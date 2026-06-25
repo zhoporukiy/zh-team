@@ -3,11 +3,404 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Новый проект</title>
-    </head>
+    <title>Discord & Telegram Hub - 3D Калькуляторы и Ресурсы</title>
+    <!-- FontAwesome for Premium Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Local styles -->
+    <link rel="stylesheet" href="style.css">
+</head>
 <body>
 
-    <h1>Привет, мир!</h1>
+    <div class="app-container">
+        <main class="main-card">
+            <header>
+                <h1><i class="fab fa-discord"></i> DS & TG Hub <i class="fab fa-telegram"></i></h1>
+                <p>3D Интерактивные калькуляторы, редактор постов и база знаний</p>
+            </header>
 
-    </body>
+            <!-- 3D Tab Navigation -->
+            <nav class="tabs-navigation">
+                <button class="tab-btn active" data-tab="editor-tab">
+                    <i class="fas fa-edit"></i> Редактор & Лимиты
+                </button>
+                <button class="tab-btn" data-tab="discord-tab">
+                    <i class="fab fa-discord"></i> Discord Права
+                </button>
+                <button class="tab-btn" data-tab="roi-tab">
+                    <i class="fas fa-chart-line"></i> Реклама & ROI
+                </button>
+                <button class="tab-btn" data-tab="resources-tab">
+                    <i class="fas fa-book"></i> База Ресурсов
+                </button>
+            </nav>
+
+            <!-- ==================== TAB 1: EDITOR & LIMITS ==================== -->
+            <section id="editor-tab" class="tab-content active">
+                <div class="post-editor-grid">
+                    <!-- Left: Input & Formats -->
+                    <div class="panel-3d">
+                        <div class="panel-title">
+                            <i class="fas fa-pen-fancy"></i> Конструктор Сообщения
+                        </div>
+                        
+                        <div class="format-bar">
+                            <button class="format-btn" id="format-bold" title="Жирный"><i class="fas fa-bold"></i></button>
+                            <button class="format-btn" id="format-italic" title="Курсив"><i class="fas fa-italic"></i></button>
+                            <button class="format-btn" id="format-spoiler" title="Спойлер"><i class="fas fa-eye-slash"></i></button>
+                            <button class="format-btn" id="format-code" title="Встроенный код"><i class="fas fa-code"></i></button>
+                            <button class="format-btn" id="format-codeblock" title="Блок кода"><i class="fas fa-terminal"></i></button>
+                        </div>
+
+                        <div class="textarea-wrapper">
+                            <textarea id="text-editor" class="custom-textarea" placeholder="Введите ваш пост здесь. Используйте кнопки форматирования или Markdown разметку..."></textarea>
+                        </div>
+
+                        <div class="mode-selectors">
+                            <div class="mode-group">
+                                <label for="tg-limit-mode">Лимит Telegram</label>
+                                <select id="tg-limit-mode" class="select-3d">
+                                    <option value="tg-post">Обычный пост (4096)</option>
+                                    <option value="tg-caption">Медиа-подпись (1024)</option>
+                                    <option value="tg-post-prem">Premium пост (8192)</option>
+                                    <option value="tg-caption-prem">Premium медиа (4096)</option>
+                                    <option value="tg-bio">О себе (70)</option>
+                                    <option value="tg-bio-prem">Premium о себе (140)</option>
+                                </select>
+                            </div>
+                            <div class="mode-group">
+                                <label for="ds-limit-mode">Лимит Discord</label>
+                                <select id="ds-limit-mode" class="select-3d">
+                                    <option value="ds-msg">Сообщение (2000)</option>
+                                    <option value="ds-nitro">Nitro сообщение (4000)</option>
+                                    <option value="ds-embed-desc">Описание Embed (4096)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="stats-row">
+                            <span>Заполнено лимита</span>
+                            <span class="limit-info"><strong id="char-counter-val">0</strong> / <span id="char-limit-val">4096</span> симв.</span>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-bar" id="char-progress"></div>
+                        </div>
+
+                        <div class="details-counters">
+                            <div class="mini-counter-card">
+                                <span>Пост TG</span>
+                                <strong id="mini-tg-post">0/4096</strong>
+                            </div>
+                            <div class="mini-counter-card">
+                                <span>Медиа TG</span>
+                                <strong id="mini-tg-cap">0/1024</strong>
+                            </div>
+                            <div class="mini-counter-card">
+                                <span>Message DS</span>
+                                <strong id="mini-ds-msg">0/2000</strong>
+                            </div>
+                            <div class="mini-counter-card">
+                                <span>Nitro DS</span>
+                                <strong id="mini-ds-nitro">0/4000</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Previews -->
+                    <div class="previews-column">
+                        <div class="preview-toggle">
+                            <button class="toggle-btn active" data-preview="tg">
+                                <i class="fab fa-telegram"></i> Telegram Превью
+                            </button>
+                            <button class="toggle-btn" data-preview="ds">
+                                <i class="fab fa-discord"></i> Discord Превью
+                            </button>
+                        </div>
+
+                        <!-- TG Preview Bubble -->
+                        <div class="preview-container active" id="tg-preview">
+                            <div class="tg-theme">
+                                <div class="tg-message-bubble">
+                                    <div class="tg-bubble-header">Название вашего канала</div>
+                                    <div class="tg-message-text" id="tg-preview-text"><i>Пустое сообщение...</i></div>
+                                    <div class="tg-message-meta">
+                                        12:00 <i class="fas fa-check-double"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- DS Preview Bubble -->
+                        <div class="preview-container" id="ds-preview">
+                            <div class="ds-theme">
+                                <div class="ds-message">
+                                    <div class="ds-avatar">DS</div>
+                                    <div class="ds-msg-content">
+                                        <div class="ds-author-row">
+                                            <span class="ds-username">Администратор</span>
+                                            <span class="ds-bot-badge">Бот</span>
+                                            <span class="ds-timestamp">Сегодня в 12:00</span>
+                                        </div>
+                                        <div class="ds-text" id="ds-preview-text"><i>Пустое сообщение...</i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================== TAB 2: DISCORD PERMISSIONS ==================== -->
+            <section id="discord-tab" class="tab-content">
+                <div class="perms-grid">
+                    <!-- Left: Checkboxes -->
+                    <div class="perms-categories">
+                        <!-- General -->
+                        <div class="perms-category-card">
+                            <div class="category-title"><i class="fas fa-cog"></i> Общие права</div>
+                            <div class="checkbox-list">
+                                <label class="checkbox-label"><input type="checkbox" class="perm-checkbox" data-value="8"> Администратор</label>
+                                <label class="checkbox-label"><input type="checkbox" class="perm-checkbox" data-value="32"> Управление сервером</label>
+                                <label class="checkbox-label"><input type="checkbox" class="perm-checkbox" data-value="268435456"> Управление ролями</label>
+                                <label class="checkbox-label"><input type="checkbox" class="perm-checkbox" data-value="16"> Управление каналами</label>
+                                <label class="checkbox-label"><input type="checkbox" class="perm-checkbox" data-value="2"> Выгонять участников</label>
+                                <label class="checkbox-label"><input type="checkbox" class="perm-checkbox" data-value="4"> Банить участников</label>
+                                <label class="checkbox-label"><input type="checkbox" class="perm-checkbox" data-value="128"> Просмотр журнала аудита</label>
+                                <label class="checkbox-label"><input type="checkbox" class="perm-checkbox" data-value="134217728"> Управление никнеймами</label>
+                            </div>
+                        </div>
+
+                        <!-- Text -->
+                        <div class="perms-category-card">
+                            <div class="category-title"><i class="fas fa-comment-alt"></i> Текстовые права</div>
+                            <div class="checkbox-list">
+                                <label class="checkbox-label"><input type="checkbox" class="perm-checkbox" data-value="2048"> Отправка сообщений</label>
+                                <label class="checkbox-label"><input type="checkbox" class="perm-checkbox" data-value="16384"> Встраивать ссылки</label>
+                                <label class="checkbox-label"><input type="checkbox" class="perm-checkbox" data-value="32768"> Прикреплять файлы</label>
+                                <label class="checkbox-label"><input type="checkbox" class="perm-checkbox" data-value="64"> Добавление реакций</label>
+                                <label class="checkbox-label"><input type="checkbox" class="perm-checkbox" data-value="262144"> Внешние эмодзи</label>
+                                <label class="checkbox-label"><input type="checkbox" class="perm-checkbox" data-value="131072"> Упоминание @everyone</label>
+                                <label class="checkbox-label"><input type="checkbox" class="perm-checkbox" data-value="8192"> Управление сообщениями</label>
+                                <label class="checkbox-label"><input type="checkbox" class="perm-checkbox" data-value="65536"> История сообщений</label>
+                            </div>
+                        </div>
+
+                        <!-- Voice -->
+                        <div class="perms-category-card">
+                            <div class="category-title"><i class="fas fa-microphone"></i> Голосовые права</div>
+                            <div class="checkbox-list">
+                                <label class="checkbox-label"><input type="checkbox" class="perm-checkbox" data-value="1048576"> Подключение</label>
+                                <label class="checkbox-label"><input type="checkbox" class="perm-checkbox" data-value="2097152"> Разговор</label>
+                                <label class="checkbox-label"><input type="checkbox" class="perm-checkbox" data-value="4194304"> Отключать микрофон</label>
+                                <label class="checkbox-label"><input type="checkbox" class="perm-checkbox" data-value="8388608"> Отключать звук</label>
+                                <label class="checkbox-label"><input type="checkbox" class="perm-checkbox" data-value="16777216"> Перемещать участников</label>
+                                <label class="checkbox-label"><input type="checkbox" class="perm-checkbox" data-value="33554432"> Активация по голосу</label>
+                                <label class="checkbox-label"><input type="checkbox" class="perm-checkbox" data-value="256"> Приоритетный режим</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Results & URL Gen -->
+                    <div class="invite-generator-panel panel-3d">
+                        <div class="panel-title">
+                            <i class="fas fa-link"></i> Приглашение Бота
+                        </div>
+                        
+                        <div class="number-result-box">
+                            <span>Число прав (Permissions ID)</span>
+                            <strong id="perms-integer">0</strong>
+                        </div>
+
+                        <div class="form-group-3d">
+                            <label for="client-id">Client ID бота (Application ID)</label>
+                            <input type="text" id="client-id" class="input-3d" placeholder="Вставьте ID из Discord Developer Portal...">
+                        </div>
+
+                        <div class="form-group-3d">
+                            <label for="generated-url">Ссылка для приглашения</label>
+                            <input type="text" id="generated-url" class="input-3d" readonly value="Введите Client ID бота...">
+                        </div>
+
+                        <button class="btn-3d" id="copy-url-btn" disabled>
+                            <i class="fas fa-copy"></i> Скопировать инвайт
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================== TAB 3: MARKETING ROI CALCULATOR ==================== -->
+            <section id="roi-tab" class="tab-content">
+                <div class="calc-grid">
+                    <!-- Left Inputs -->
+                    <div class="calc-inputs panel-3d">
+                        <div class="panel-title">
+                            <i class="fas fa-coins"></i> Вводные данные кампании
+                        </div>
+                        <div class="form-group-3d">
+                            <label for="calc-budget">Бюджет рекламы (₽)</label>
+                            <input type="number" id="calc-budget" class="input-3d" placeholder="Например, 10000" min="0">
+                        </div>
+                        <div class="form-group-3d">
+                            <label for="calc-views">Просмотры / Охваты</label>
+                            <input type="number" id="calc-views" class="input-3d" placeholder="Например, 50000" min="0">
+                        </div>
+                        <div class="form-group-3d">
+                            <label for="calc-clicks">Клики / Переходы</label>
+                            <input type="number" id="calc-clicks" class="input-3d" placeholder="Например, 1200" min="0">
+                        </div>
+                        <div class="form-group-3d">
+                            <label for="calc-actions">Действия / Новые подписчики</label>
+                            <input type="number" id="calc-actions" class="input-3d" placeholder="Например, 350" min="0">
+                        </div>
+                    </div>
+
+                    <!-- Right Results -->
+                    <div class="calc-results-grid">
+                        <div class="stat-card-3d tg-bar">
+                            <div class="stat-label">CPM</div>
+                            <div class="stat-value" id="res-cpm">0.00 ₽</div>
+                            <div class="stat-desc">Цена за 1000 показов/просмотров</div>
+                        </div>
+                        <div class="stat-card-3d tg-bar">
+                            <div class="stat-label">CPC</div>
+                            <div class="stat-value" id="res-cpc">0.00 ₽</div>
+                            <div class="stat-desc">Стоимость одного клика/перехода</div>
+                        </div>
+                        <div class="stat-card-3d green-bar">
+                            <div class="stat-label">CPA / CPF</div>
+                            <div class="stat-value" id="res-cpa">0.00 ₽</div>
+                            <div class="stat-desc">Цена за подписчика/целевое действие</div>
+                        </div>
+                        <div class="stat-card-3d orange-bar">
+                            <div class="stat-label">CTR</div>
+                            <div class="stat-value" id="res-ctr">0.00%</div>
+                            <div class="stat-desc">Кликабельность (отношение кликов к показам)</div>
+                        </div>
+                        <div class="stat-card-3d green-bar" style="grid-column: span 2;">
+                            <div class="stat-label">CR (Conversion Rate)</div>
+                            <div class="stat-value" id="res-cr">0.00%</div>
+                            <div class="stat-desc">Процент конверсии кликов в целевые действия</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================== TAB 4: INFO & RESOURCES ==================== -->
+            <section id="resources-tab" class="tab-content">
+                <div class="resources-grid">
+                    <!-- Left: Markdown reference -->
+                    <div class="panel-3d">
+                        <div class="panel-title">
+                            <i class="fab fa-markdown"></i> Шпаргалка разметки (Markdown)
+                        </div>
+                        <div class="table-3d-wrapper">
+                            <table class="table-3d">
+                                <thead>
+                                    <tr>
+                                        <th>Эффект</th>
+                                        <th>Telegram</th>
+                                        <th>Discord</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Жирный</strong></td>
+                                        <td><code>**текст**</code></td>
+                                        <td><code>**текст**</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><em>Курсив</em></td>
+                                        <td><code>*текст*</code> или <code>__текст__</code></td>
+                                        <td><code>*текст*</code> или <code>_текст_</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="tg-spoiler revealed">Спойлер</span></td>
+                                        <td><code>||текст||</code></td>
+                                        <td><code>||текст||</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><s>Зачеркнутый</s></td>
+                                        <td><code>~~текст~~</code></td>
+                                        <td><code>~~текст~~</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>Код</code></td>
+                                        <td><code>`код`</code></td>
+                                        <td><code>`код`</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Блок кода</td>
+                                        <td><code>```код```</code></td>
+                                        <td><code>```код```</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Цитата</td>
+                                        <td><code>&gt; текст</code></td>
+                                        <td><code>&gt; текст</code></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Right: Resource Links -->
+                    <div class="panel-3d">
+                        <div class="panel-title">
+                            <i class="fas fa-external-link-alt"></i> Полезные ресурсы и инструменты
+                        </div>
+                        
+                        <div class="resource-cards-list">
+                            <a href="https://t.me/BotFather" target="_blank" class="link-card-3d tg-style">
+                                <div class="link-card-content">
+                                    <div class="link-icon-3d"><i class="fab fa-telegram"></i></div>
+                                    <div class="link-details">
+                                        <h4>@BotFather</h4>
+                                        <p>Создание и настройка ботов в Telegram</p>
+                                    </div>
+                                </div>
+                                <div class="link-arrow"><i class="fas fa-chevron-right"></i></div>
+                            </a>
+
+                            <a href="https://discord.com/developers/applications" target="_blank" class="link-card-3d">
+                                <div class="link-card-content">
+                                    <div class="link-icon-3d"><i class="fab fa-discord"></i></div>
+                                    <div class="link-details">
+                                        <h4>Discord Developer Portal</h4>
+                                        <p>Создание приложений, управление ботами и Client ID</p>
+                                    </div>
+                                </div>
+                                <div class="link-arrow"><i class="fas fa-chevron-right"></i></div>
+                            </a>
+
+                            <a href="https://core.telegram.org/bots/api" target="_blank" class="link-card-3d tg-style">
+                                <div class="link-card-content">
+                                    <div class="link-icon-3d"><i class="fas fa-code"></i></div>
+                                    <div class="link-details">
+                                        <h4>Telegram Bot API</h4>
+                                        <p>Официальная документация по Telegram API</p>
+                                    </div>
+                                </div>
+                                <div class="link-arrow"><i class="fas fa-chevron-right"></i></div>
+                            </a>
+
+                            <a href="https://top.gg" target="_blank" class="link-card-3d">
+                                <div class="link-card-content">
+                                    <div class="link-icon-3d"><i class="fas fa-robot"></i></div>
+                                    <div class="link-details">
+                                        <h4>Top.gg</h4>
+                                        <p>Каталог и аналитика Discord ботов и серверов</p>
+                                    </div>
+                                </div>
+                                <div class="link-arrow"><i class="fas fa-chevron-right"></i></div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Script connection -->
+    <script src="app.js"></script>
+</body>
 </html>
